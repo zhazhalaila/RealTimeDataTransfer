@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -59,3 +60,13 @@ def logout():
     cache.delete(user) #remove user from redis
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    sensors = [
+        {'owner': user, 'sensorname': 'DHT11'},
+        {'owner': user, 'sensorname': 'MQ5'}
+    ]
+    return render_template('user.html', user=user, sensors=sensors)
