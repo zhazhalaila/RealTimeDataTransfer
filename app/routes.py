@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from app import app, db
+from app import app, db, cache
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
 
@@ -55,5 +55,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    user = 'user_{}'.format(current_user.id)
+    cache.delete(user) #remove user from redis
     logout_user()
     return redirect(url_for('index'))
