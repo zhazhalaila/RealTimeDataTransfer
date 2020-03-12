@@ -1,27 +1,25 @@
+import pickle
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db, cache
 from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.models import User, Sensor
 
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-    user = {'username': 'Miguel'}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('index.html', title='Home', posts=posts)
+    page = request.args.get('page', 1, type=int)
+    sensors = current_user.followed_sensors().paginate(
+        page, app.config['SENSORS_PER_PAGE'], False)
+    next_url = url_for('index', page=sensors.next_num) \
+        if sensors.has_next else None
+    prev_url = url_for('index', page=sensors.prev_num) \
+        if sensors.has_prev else None
+    return render_template('index.html', title='Home', sensors=sensors.items,
+                            next_url=next_url, prev_url=prev_url)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -31,6 +29,9 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data, mqtt_topic=form.topic.data)
         user.set_password(form.password.data)
+        for sensorname in form.sensors.data:
+            sensor = Sensor(sensorname=sensorname)
+            user.sensors.append(sensor)
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
@@ -56,8 +57,10 @@ def login():
 
 @app.route('/logout')
 def logout():
+    '''
     user = 'user_{}'.format(current_user.id)
     cache.delete(user) #remove user from redis
+    '''
     logout_user()
     return redirect(url_for('index'))
 
@@ -100,3 +103,22 @@ def unfollow(username):
     db.session.commit()
     flash('You are not following {}.'.format(username))
     return redirect(url_for('user', username=username))
+
+'''
+@app.route('/test')
+def test():
+    user = User.query.get(1)
+    return user.username
+
+@app.route('/cachetest')
+def cachetest():
+    user = 'user_1'
+    use_obj = pickle.loads(cache.get(user)) if cache.get(user) else None
+    if use_obj is None:
+        query = User.query.get(1)
+        use_obj = pickle.dumps(query) #translate query result to bytes
+        cache.set(user, use_obj, timeout=3600)
+        return query.username
+    db.session.add(use_obj)
+    return use_obj.username
+'''

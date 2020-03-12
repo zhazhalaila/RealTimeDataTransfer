@@ -19,3 +19,5 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['1176694275@qq.com']
+    #page config
+    SENSORS_PER_PAGE = 25

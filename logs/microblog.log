@@ -1,4 +1,27 @@
-2020-03-11 10:37:20,054 ERROR: Exception on /user/test1 [GET] [in d:\graduate\venv\lib\site-packages\flask\app.py:1891]
+2020-03-12 10:45:04,629 ERROR: Exception on /login [POST] [in d:\graduate\venv\lib\site-packages\flask\app.py:1891]
+Traceback (most recent call last):
+  File "d:\graduate\venv\lib\site-packages\flask\app.py", line 2446, in wsgi_app
+    response = self.full_dispatch_request()
+  File "d:\graduate\venv\lib\site-packages\flask\app.py", line 1951, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "d:\graduate\venv\lib\site-packages\flask\app.py", line 1820, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "d:\graduate\venv\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "d:\graduate\venv\lib\site-packages\flask\app.py", line 1949, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "d:\graduate\venv\lib\site-packages\flask\app.py", line 1935, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "D:\graduate\RealTimeDataTransfer\app\routes.py", line 40, in login
+    if user is None or not user.check_password(form.password.data):
+  File "D:\graduate\RealTimeDataTransfer\app\models.py", line 34, in check_password
+    return check_password_hash(self.password_hash, password)
+  File "d:\graduate\venv\lib\site-packages\werkzeug\security.py", line 218, in check_password_hash
+    if pwhash.count("$") < 2:
+AttributeError: 'NoneType' object has no attribute 'count'
+2020-03-12 10:46:58,631 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:46]
+2020-03-12 10:49:00,087 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:46]
+2020-03-12 10:49:01,520 ERROR: Exception on /index [GET] [in d:\graduate\venv\lib\site-packages\flask\app.py:1891]
 Traceback (most recent call last):
   File "d:\graduate\venv\lib\site-packages\flask\app.py", line 2446, in wsgi_app
     response = self.full_dispatch_request()
@@ -14,42 +37,14 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "d:\graduate\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
     return func(*args, **kwargs)
-  File "D:\graduate\RealTimeDataTransfer\app\routes.py", line 72, in user
-    return render_template('user.html', user=user, sensors=sensors)
-  File "d:\graduate\venv\lib\site-packages\flask\templating.py", line 140, in render_template
-    ctx.app,
-  File "d:\graduate\venv\lib\site-packages\flask\templating.py", line 120, in _render
-    rv = template.render(context)
-  File "d:\graduate\venv\lib\site-packages\jinja2\environment.py", line 1090, in render
-    self.environment.handle_exception()
-  File "d:\graduate\venv\lib\site-packages\jinja2\environment.py", line 832, in handle_exception
-    reraise(*rewrite_traceback_stack(source=source))
-  File "d:\graduate\venv\lib\site-packages\jinja2\_compat.py", line 28, in reraise
-    raise value.with_traceback(tb)
-  File "D:\graduate\RealTimeDataTransfer\app\templates\user.html", line 1, in top-level template code
-    {% extends "base.html" %}
-  File "D:\graduate\RealTimeDataTransfer\app\templates\base.html", line 1, in top-level template code
-    {% extends 'bootstrap/base.html' %}
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
-    {% block doc -%}
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 3, in block "doc"
-    <html{% block html_attribs %}{% endblock html_attribs %}>
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 11, in block "html"
-    {%- endblock metas %}
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 13, in block "body"
-    {%- block styles %}
-  File "D:\graduate\RealTimeDataTransfer\app\templates\user.html", line 10, in block "content"
-    {% if not current_user.is_following(user) %}
-  File "D:\graduate\RealTimeDataTransfer\app\models.py", line 51, in is_following
-    followers.c.followed_id == user.id).count() > 0
-  File "<string>", line 2, in filter
-  File "d:\graduate\venv\lib\site-packages\sqlalchemy\orm\base.py", line 217, in generate
-    self = args[0]._clone()
-  File "d:\graduate\venv\lib\site-packages\sqlalchemy\orm\dynamic.py", line 349, in _clone
-    % (orm_util.instance_str(instance), self.attr.key)
-sqlalchemy.orm.exc.DetachedInstanceError: Parent instance <User at 0x18d3ed0fc18> is not bound to a Session, and no contextual session is established; lazy load operation of attribute 'followed' cannot proceed (Background on this error at: http://sqlalche.me/e/bhk3)
-2020-03-11 10:38:31,879 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
-2020-03-11 10:38:34,770 ERROR: Exception on /user/test1 [GET] [in d:\graduate\venv\lib\site-packages\flask\app.py:1891]
+  File "D:\graduate\RealTimeDataTransfer\app\routes.py", line 14, in index
+    sensors = current_user.sensors()
+TypeError: 'AppenderBaseQuery' object is not callable
+2020-03-12 10:49:14,888 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:46]
+2020-03-12 10:49:54,119 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:46]
+2020-03-12 10:55:50,177 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:48]
+2020-03-12 10:56:06,008 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
+2020-03-12 11:25:36,018 ERROR: Exception on / [GET] [in d:\graduate\venv\lib\site-packages\flask\app.py:1891]
 Traceback (most recent call last):
   File "d:\graduate\venv\lib\site-packages\flask\app.py", line 2446, in wsgi_app
     response = self.full_dispatch_request()
@@ -63,42 +58,24 @@ Traceback (most recent call last):
     rv = self.dispatch_request()
   File "d:\graduate\venv\lib\site-packages\flask\app.py", line 1935, in dispatch_request
     return self.view_functions[rule.endpoint](**req.view_args)
-  File "d:\graduate\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "D:\graduate\RealTimeDataTransfer\app\routes.py", line 72, in user
-    return render_template('user.html', user=user, sensors=sensors)
-  File "d:\graduate\venv\lib\site-packages\flask\templating.py", line 140, in render_template
-    ctx.app,
-  File "d:\graduate\venv\lib\site-packages\flask\templating.py", line 120, in _render
-    rv = template.render(context)
-  File "d:\graduate\venv\lib\site-packages\jinja2\environment.py", line 1090, in render
-    self.environment.handle_exception()
-  File "d:\graduate\venv\lib\site-packages\jinja2\environment.py", line 832, in handle_exception
-    reraise(*rewrite_traceback_stack(source=source))
-  File "d:\graduate\venv\lib\site-packages\jinja2\_compat.py", line 28, in reraise
-    raise value.with_traceback(tb)
-  File "D:\graduate\RealTimeDataTransfer\app\templates\user.html", line 1, in top-level template code
-    {% extends "base.html" %}
-  File "D:\graduate\RealTimeDataTransfer\app\templates\base.html", line 1, in top-level template code
-    {% extends 'bootstrap/base.html' %}
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
-    {% block doc -%}
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 3, in block "doc"
-    <html{% block html_attribs %}{% endblock html_attribs %}>
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 11, in block "html"
-    {%- endblock metas %}
-  File "d:\graduate\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 13, in block "body"
-    {%- block styles %}
-  File "D:\graduate\RealTimeDataTransfer\app\templates\user.html", line 10, in block "content"
-    {% if not current_user.is_following(user) %}
-  File "D:\graduate\RealTimeDataTransfer\app\models.py", line 51, in is_following
-    followers.c.followed_id == user.id).count() > 0
-  File "<string>", line 2, in filter
-  File "d:\graduate\venv\lib\site-packages\sqlalchemy\orm\base.py", line 217, in generate
-    self = args[0]._clone()
-  File "d:\graduate\venv\lib\site-packages\sqlalchemy\orm\dynamic.py", line 349, in _clone
-    % (orm_util.instance_str(instance), self.attr.key)
-sqlalchemy.orm.exc.DetachedInstanceError: Parent instance <User at 0x1cb80fddcc0> is not bound to a Session, and no contextual session is established; lazy load operation of attribute 'followed' cannot proceed (Background on this error at: http://sqlalche.me/e/bhk3)
-2020-03-11 10:44:07,612 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
-2020-03-11 11:07:46,072 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
-2020-03-11 11:10:04,546 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
+  File "d:\graduate\venv\lib\site-packages\flask_login\utils.py", line 270, in decorated_view
+    elif not current_user.is_authenticated:
+  File "d:\graduate\venv\lib\site-packages\werkzeug\local.py", line 347, in __getattr__
+    return getattr(self._get_current_object(), name)
+  File "d:\graduate\venv\lib\site-packages\werkzeug\local.py", line 306, in _get_current_object
+    return self.__local()
+  File "d:\graduate\venv\lib\site-packages\flask_login\utils.py", line 26, in <lambda>
+    current_user = LocalProxy(lambda: _get_user())
+  File "d:\graduate\venv\lib\site-packages\flask_login\utils.py", line 346, in _get_user
+    current_app.login_manager._load_user()
+  File "d:\graduate\venv\lib\site-packages\flask_login\login_manager.py", line 318, in _load_user
+    user = self._user_callback(user_id)
+  File "D:\graduate\RealTimeDataTransfer\app\models.py", line 62, in load_user
+    return use_obj
+NameError: name 'use_obj' is not defined
+2020-03-12 11:26:15,809 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
+2020-03-12 11:36:55,012 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
+2020-03-12 11:37:14,987 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
+2020-03-12 11:43:09,284 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
+2020-03-12 11:43:37,955 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
+2020-03-12 11:44:33,971 INFO: Microblog startup [in D:\graduate\RealTimeDataTransfer\app\__init__.py:49]
