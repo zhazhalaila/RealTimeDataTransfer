@@ -33,3 +33,13 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(mqtt_topic=topic.data).first()
         if user is not None:
             raise ValidationError('Please use a different mqtt topic')
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Request Password Reset')
