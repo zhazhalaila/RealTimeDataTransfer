@@ -24,7 +24,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 bootstrap = Bootstrap(app)
-login.login_view = 'login'
+login.login_view = 'auth.login'
 login.login_message = _l('Please log in to access this page.')
 admin = Admin(app, name='microapp', template_mode='bootstrap3')
 
@@ -59,7 +59,15 @@ if not app.debug:
 def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
+from app.errors import bp as errors_bp
+app.register_blueprint(errors_bp)
 
-from app import routes, models, errors
+from app.auth import bp as auth_bp
+app.register_blueprint(auth_bp, url_prefix='/auth')
+
+from app.main import bp as main_bp
+app.register_blueprint(main_bp)
+
+from app import models
 admin.add_view(ModelView(models.User, db.session))
 admin.add_view(ModelView(models.Sensor, db.session))

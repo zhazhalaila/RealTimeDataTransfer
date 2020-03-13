@@ -1,12 +1,12 @@
 <table class="table table-hover">
     <tr>
         <td width="70px">
-            <a href="{{ url_for('user', username=sensor.owner.username) }}">
+            <a href="{{ url_for('main.user', username=sensor.owner.username) }}">
                 <img src="{{ sensor.owner.avatar(70) }}" />
             </a>
         </td>
         <td>
-            <a href="{{ url_for('user', username=sensor.owner.username) }}">
+            <a href="{{ url_for('main.user', username=sensor.owner.username) }}">
                 {{ sensor.owner.username }}
             </a>
             says:

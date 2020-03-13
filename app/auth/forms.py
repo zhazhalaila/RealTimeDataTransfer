@@ -4,7 +4,6 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Le
 from flask_babel import _, lazy_gettext as _l
 from app.models import User
 
-
 class LoginForm(FlaskForm):
     username = StringField(_l('Username'), validators=[DataRequired()])
     password = PasswordField(_l('Password'), validators=[DataRequired()])
