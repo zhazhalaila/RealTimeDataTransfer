@@ -1,6 +1,7 @@
 import pickle
 import jwt
 from time import time
+from datetime import datetime
 from hashlib import md5
 from app import app, db, login, cache
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,6 +18,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     mqtt_topic = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     #one to many
     sensors = db.relationship('Sensor', backref='owner', lazy='dynamic')
     #many to many

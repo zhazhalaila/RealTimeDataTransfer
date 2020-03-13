@@ -5,12 +5,15 @@
         <tr>
             <td width="128px"><img src="{{ user.avatar(128) }}"></td>
             <td>
-                <h1>User: {{ user.username }}</h1>
-                <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+                <h1>{{ _('User') }}: {{ user.username }}</h1>
+                {% if user.last_seen %}
+                <p>{{ _('Last seen on') }}: {{ moment(user.last_seen).format('LLL') }}</p>
+                {% endif %}
+                <p>{{ _('%(count)d followers', count=user.followers.count()) }}, {{ _('%(count)d following', count=user.followed.count()) }}</p>
                 {% if not current_user.is_following(user) %}
-                <p><a href="{{ url_for('follow', username=user.username) }}">Follow</a></p>
+                <p><a href="{{ url_for('follow', username=user.username) }}">{{ _('Follow') }}</a></p>
                 {% else %}
-                <p><a href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a></p>
+                <p><a href="{{ url_for('unfollow', username=user.username) }}">{{ _('Unfollow') }}</a></p>
                 {% endif %}
             </td>
         </tr>

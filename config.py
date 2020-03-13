@@ -21,3 +21,5 @@ class Config(object):
     ADMINS = ['1176694275@qq.com']
     #page config
     SENSORS_PER_PAGE = 25
+    #language support
+    LANGUAGES = ['zh', 'es']
