@@ -1,10 +1,10 @@
 import pickle
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, g
+from flask import render_template, flash, redirect, url_for, request, g, current_app
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_babel import _, get_locale
 from werkzeug.urls import url_parse
-from app import app, db, cache
+from app import db, cache
 from app.models import User, Sensor
 from app.main import bp
 
@@ -21,7 +21,7 @@ def before_request():
 def index():
     page = request.args.get('page', 1, type=int)
     sensors = current_user.followed_sensors().paginate(
-        page, app.config['SENSORS_PER_PAGE'], False)
+        page, current_app.config['SENSORS_PER_PAGE'], False)
     next_url = url_for('main.index', page=sensors.next_num) \
         if sensors.has_next else None
     prev_url = url_for('main.index', page=sensors.prev_num) \
