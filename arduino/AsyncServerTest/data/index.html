@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="src/bootstrap.min.css">
+
+    <title>WiFi配置</title>
+  </head>
+  <body>
+	<form action="FormSubmit" method="POST">
+
+		<div class="form-group">
+			<label for="exampleInputSsid">WiFI名</label>
+			<input class="form-control" type="text" name="connect_ssid" placeholder="">
+		</div>
+		<div class="form-group">
+			<label for="exampleInputPassword1">WiFI密码</label>
+			<input type="password" class="form-control" name="connect_password"  id="exampleInputPassword1">
+		</div>
+		<button type="submit" class="btn btn-primary">配置</button>
+	</form>
+  </body>
+</html>
