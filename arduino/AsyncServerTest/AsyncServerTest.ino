@@ -1,13 +1,11 @@
 #include "WiFi.h"
+#include "WiFiAP.h"
 #include "SPIFFS.h"
 #include "ESPAsyncWebServer.h"
- 
-const char* ssid = "cainiaoa";
-const char* password =  "66666666";
 
 String connect_ssid;
 String connect_password;
- 
+
 AsyncWebServer server(80);
  
 void setup(){
@@ -17,15 +15,15 @@ void setup(){
      Serial.println("An Error has occurred while mounting SPIFFS");
      return;
   }
- 
-  WiFi.begin(ssid, password);
- 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
-  }
- 
-  Serial.println(WiFi.localIP());
+
+  //run ap and station at the same time
+  WiFi.mode(WIFI_AP_STA);
+
+  Serial.print("Setting soft-AP ... ");
+  Serial.println(WiFi.softAP("esp32", "66666666") ? "Ready" : "Failed!");
+
+  Serial.print("Soft-AP IP address = ");
+  Serial.println(WiFi.softAPIP());
  
   server.on("/index", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", "text/html");
@@ -57,6 +55,8 @@ void setup(){
     {
       connect_ssid = request->getParam("connect_ssid", true)->value();
       connect_password = request->getParam("connect_password", true)->value();
+      //convert string type to char* type as parameters which wifi.begin use
+      WiFi.begin((const char*)connect_ssid.c_str(), (const char*)connect_password.c_str());
     }
     else
     {
