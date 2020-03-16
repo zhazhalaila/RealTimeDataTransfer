@@ -2,12 +2,36 @@
 #include "WiFiAP.h"
 #include "SPIFFS.h"
 #include "ESPAsyncWebServer.h"
+#include "MQTT.h"
 
 String connect_ssid;
 String connect_password;
+String connect_mqtt_server;
+
+unsigned long lastMillis = 0;
+
+WiFiClient net;
+MQTTClient client;
 
 AsyncWebServer server(80);
- 
+
+//mqtt connect
+void connect() {
+  Serial.print("connecting...");
+  while (!client.connect("arduino", "try", "try")) {
+    Serial.print(".");
+  }
+
+  Serial.println("\nconnected!");
+
+  client.subscribe("/example");
+}
+
+void messageReceived(String &topic, String &payload) {
+  Serial.println("incoming: " + topic + " - " + payload);
+}
+
+
 void setup(){
   Serial.begin(115200);
  
@@ -63,13 +87,43 @@ void setup(){
       connect_ssid = "not specified";
       connect_password = "not specified";
     }
-    request->send(200, "text/plain", "Submit: " + connect_ssid + connect_password);
+    if (request->hasParam("connect_mqtt_server", true))
+    {
+      connect_mqtt_server = request->getParam("connect_mqtt_server", true)->value();
+      client.begin((const char*)connect_mqtt_server.c_str(), net);
+      client.onMessage(messageReceived);
+      connect();
+    }
+    else
+    {
+      connect_mqtt_server = "";
+    }
+    request->send(200, "text/plain", "Submit: " + connect_ssid + connect_password + connect_mqtt_server);
     Serial.print("Ssid: ");
     Serial.println(connect_ssid);
     Serial.print("Password: ");
     Serial.println(connect_password);
+    Serial.print("Mqtt_server: ");
+    Serial.println(connect_mqtt_server);
   });
   server.begin();
 }
  
-void loop(){}
+void loop()
+{
+  client.loop();
+
+  //check mqtt client connect status and user input
+  if (!client.connected() && !connect_mqtt_server)
+  {
+    connect();
+  }
+
+  //send message every second
+  if (millis() - lastMillis > 1000 && client.connected())
+  {
+    Serial.println("connect successfully");
+    lastMillis = millis();
+    client.publish("/hello", "world");
+  }
+}
