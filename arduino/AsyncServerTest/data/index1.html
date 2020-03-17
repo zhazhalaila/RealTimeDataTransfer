@@ -6,22 +6,23 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="src/bootstrap.min.css">
+		<!-- JQuery -->
 		<script src="src/jquery-3.4.1.min.js"></script>
 		<title>WiFi配置</title>
 	</head>
 	<body>
 		<div class="row">
 			<div class="col-sm-12">
-					<div id="divInfo" class="alert alert-success fade ">
-					</div>
+				<div id="divInfo" class="alert alert-success fade ">
+				</div>
 			</div>
 		</div>
-			
+		
 		<div class="btn-group btn-group-sm text-center" role="group" aria-label="Basic example">
 			<button id="close" type="button" class="btn btn-secondary" style="display: none;">关闭</button>
 			<button id="show" type="button" class="btn btn-secondary">获取当前配置</button>
 		</div>
-			
+		
 		<form name="wifi" action="FormSubmit" method="POST">
 			<div class="form-group">
 				<label for="exampleInputSsid">WiFI名</label>
@@ -29,24 +30,21 @@
 			</div>
 			<div class="form-group">
 				<label for="exampleInputPassword1">WiFI密码</label>
-				<input type="password" class="form-control" name="connect_password"  id="exampleInputPassword1">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputSsid">MQTT服务器</label>
 				<input class="form-control" type="text" name="connect_mqtt_server" placeholder="">
 			</div>
 			<button type="submit" class="btn btn-secondary">配置</button>
 		</form>
 	</body>
+	
 	<script>
-		$(document).ready(function(){		
-		
+		$(document).ready(function(){
+			
 			$('#close').on('click', function () {
 				$('#divInfo').removeClass('show');
 				$('#close').css('display', 'none');
 				$('#divInfo').empty();
 			});
-				
+			
 			$('#show').on('click', function () {
 				$.ajax({
 					url: '/getConfig',
@@ -57,13 +55,12 @@
 							text += '' + key + ': ' + data[key];
 							text += '<hr>';
 						}
-						console.log(data);
 						$('#divInfo').addClass('show').append(text);
 						$('#close').css('display', 'block');
 					}
 				})
 			});
-
+			
 			$('form[name="wifi"]').on('submit', function( event ) {
 				event.preventDefault();
 				var connect_ssid = $('input[name="connect_ssid"]').val();
@@ -86,13 +83,11 @@
 							text += '' + key + ': ' + data[key];
 							text += '<hr>';
 						}
-						console.log(text);
-						console.log(data);
 						$('#divInfo').addClass('show').append(text);
 						$('#close').css('display', 'block');
 					}
 				})
-			});
+			})
 		});
 	</script>
 </html>

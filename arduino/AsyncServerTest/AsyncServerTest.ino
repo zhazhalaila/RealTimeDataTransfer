@@ -1,8 +1,10 @@
-#include "WiFi.h"
-#include "WiFiAP.h"
-#include "SPIFFS.h"
-#include "ESPAsyncWebServer.h"
-#include "MQTT.h"
+#include <WiFi.h>
+#include <WiFiAP.h>
+#include <SPIFFS.h>
+#include <ESPAsyncWebServer.h>
+#include <MQTT.h>
+#include "AsyncJson.h"
+#include "ArduinoJson.h"
 
 String connect_ssid;
 String connect_password;
@@ -18,7 +20,7 @@ AsyncWebServer server(80);
 //mqtt connect
 void connect() {
   Serial.print("connecting...");
-  while (!client.connect("arduino", "try", "try")) {
+  while (!client.connect("MyEsp32Test", "try", "try")) {
     Serial.print(".");
   }
 
@@ -57,55 +59,53 @@ void setup(){
     request->send(SPIFFS, "/src/bootstrap.min.css", "text/css");
   });
 
-  server.on("/FormSubmit", HTTP_POST, [](AsyncWebServerRequest *request) {
-    Serial.println("submit hit.");
-    int params = request->params();
-    Serial.printf("%d params sent in\n", params);
-    // get params
-    for (int i = 0; i < params; i++)
-    {
-      AsyncWebParameter *p = request->getParam(i);
-      if (p->isPost())
-      {
-        Serial.printf("_POST[%s]: %s", p->name().c_str(), p->value().c_str());
-      }
-      else
-      {
-        Serial.printf("_GET[%s]: %s", p->name().c_str(), p->value().c_str());
-      }
-    }
-    //get params value
-    if (request->hasParam("connect_ssid", true) && request->hasParam("connect_password", true))
-    {
-      connect_ssid = request->getParam("connect_ssid", true)->value();
-      connect_password = request->getParam("connect_password", true)->value();
-      //convert string type to char* type as parameters which wifi.begin use
-      WiFi.begin((const char*)connect_ssid.c_str(), (const char*)connect_password.c_str());
-    }
-    else
-    {
-      connect_ssid = "not specified";
-      connect_password = "not specified";
-    }
-    if (request->hasParam("connect_mqtt_server", true))
-    {
-      connect_mqtt_server = request->getParam("connect_mqtt_server", true)->value();
-      client.begin((const char*)connect_mqtt_server.c_str(), net);
-      client.onMessage(messageReceived);
-      connect();
-    }
-    else
-    {
-      connect_mqtt_server = "";
-    }
-    request->send(200, "text/plain", "Submit: " + connect_ssid + connect_password + connect_mqtt_server);
-    Serial.print("Ssid: ");
-    Serial.println(connect_ssid);
-    Serial.print("Password: ");
-    Serial.println(connect_password);
-    Serial.print("Mqtt_server: ");
-    Serial.println(connect_mqtt_server);
+  server.on("/src/jquery-3.4.1.min.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/src/jquery-3.4.1.min.js", "text/javascript");
   });
+  
+  //get config of wifi and mqtt server return json object
+  server.on("/getConfig", HTTP_GET, [](AsyncWebServerRequest *request) {
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject &result = jsonBuffer.createObject();
+    result["connect_ssid"] = connect_ssid;
+    result["connect_password"] = connect_password;
+    result["connect_mqtt_server"] = connect_mqtt_server;
+    result.printTo(*response);
+    request->send(response);
+  });
+  
+  //post config by jsonn object
+  server.on("/postConfig", HTTP_POST, [](AsyncWebServerRequest *request){
+      //nothing and dont remove it
+  }, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& root = jsonBuffer.parseObject((const char*)data);
+    if (root.success()) 
+    {
+      if (root.containsKey("connect_ssid") && root.containsKey("connect_password")) {
+        connect_ssid = root["connect_ssid"].asString();
+        connect_password = root["connect_password"].asString();
+        //convert string type to const char* type which wifi.begin use
+        WiFi.begin((const char*)connect_ssid.c_str(), (const char*)connect_password.c_str());
+      }
+      if (root.containsKey("connect_mqtt_server")) {
+        connect_mqtt_server = root["connect_mqtt_server"].asString();
+        //convert string type to const char* type which mqtt client use
+        client.begin((const char*)connect_mqtt_server.c_str(), net);
+        client.onMessage(messageReceived);
+        connect();
+      }
+      root.printTo(*response);
+      request->send(response);
+    } 
+    else 
+    {
+      request->send(404, "text/plain", "Sorry, this is an error!");
+    }
+  });
+  
   server.begin();
 }
  
