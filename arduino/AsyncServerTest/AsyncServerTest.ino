@@ -1,5 +1,7 @@
 #include <WiFi.h>
 #include <WiFiAP.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
 #include <MQTT.h>
@@ -14,6 +16,8 @@ unsigned long lastMillis = 0;
 
 WiFiClient net;
 MQTTClient client;
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 
 AsyncWebServer server(80);
 
@@ -89,6 +93,7 @@ void setup(){
         connect_password = root["connect_password"].asString();
         //convert string type to const char* type which wifi.begin use
         WiFi.begin((const char*)connect_ssid.c_str(), (const char*)connect_password.c_str());
+        timeClient.begin();
       }
       if (root.containsKey("connect_mqtt_server")) {
         connect_mqtt_server = root["connect_mqtt_server"].asString();
@@ -120,10 +125,22 @@ void loop()
   }
 
   //send message every second
-  if (millis() - lastMillis > 1000 && client.connected())
+  if (millis() - lastMillis > 2000 && client.connected())
   {
     Serial.println("connect successfully");
+    //update date
+    timeClient.update();
+    //create json object to store data
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject &monitor_value = jsonBuffer.createObject();
+    monitor_value["temperature"] = "28.5";
+    monitor_value["humidity"] = "19%";
+    monitor_value["time"] = timeClient.getFormattedDate();
+    String payload;
+    monitor_value.printTo(payload);
+    Serial.println(payload.c_str());
     lastMillis = millis();
-    client.publish("/hello", "world");
+    //convert string type to const char[] type which mqtt client publish use
+    client.publish("/eyewater", payload.c_str());
   }
 }
