@@ -1,12 +1,13 @@
 import pickle
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, g, current_app
+from flask import render_template, flash, redirect, url_for, request, g, current_app, json
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_babel import _, get_locale
 from werkzeug.urls import url_parse
 from app import db, cache
 from app.models import User, Sensor
 from app.main import bp
+from flask_cors import cross_origin
 
 @bp.before_request
 def before_request():
@@ -14,6 +15,12 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
     g.local = str(get_locale())
+
+@bp.after_request
+def after_request(response):
+    header = response.headers
+    header['Access-Control-Allow-Origin'] = '*'
+    return response
 
 @bp.route('/')
 @bp.route('/index')

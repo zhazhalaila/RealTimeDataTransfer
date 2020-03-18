@@ -27,3 +27,5 @@ class Config(object):
     SENSORS_PER_PAGE = 25
     #language support
     LANGUAGES = ['zh', 'es']
+    #cors config
+    CORS_HEADERS = 'Content-Type'

@@ -23,3 +23,12 @@
         {% include '_sensor.html' %}
     {% endfor %}
 {% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    {% if current_user.username == user.username %}
+        console.log("Hello");
+    {% endif %}
+</script>
+{% endblock %}
