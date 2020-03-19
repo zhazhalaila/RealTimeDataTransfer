@@ -1,5 +1,6 @@
-import json
+import functools
 from app import socketio, mqtt
+from app.events import bp
 from flask_socketio import emit, send
 
 @socketio.on('subscribe')
@@ -12,4 +13,4 @@ def handle_mqtt_message(client, userdata, message):
         topic=message.topic,
         payload=message.payload.decode()
     )
-    socketio.emit('mqtt message', data=data)
+    socketio.emit(message.topic, data=data)
