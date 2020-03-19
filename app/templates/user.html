@@ -35,16 +35,19 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-<script type="text/javascript" charset="utf-8">
-    {% if current_user.username == user.username %}
-    var socket = io();
-    socket.on('connect', function() {
-        socket.emit('subscribe', {topic: '{{ current_user.mqtt_topic }}'});
-    });
-    socket.on('{{ current_user.mqtt_topic }}', function(data) {
-        $('#message').text(data.payload);
-    });
-    {% endif %}
+{% if current_user.username == user.username %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io();
+        socket.on('connect', function() {
+            socket.emit('subscribe', {topic: '{{ current_user.mqtt_topic }}'});
+        });
+        socket.on('{{ current_user.mqtt_topic }}', function(data) {
+            $('#message').text(data.payload);
+        });
+        window.addEventListener("beforeunload", function (e) {
+            socket.emit('unsubscribe', {topic: '{{ current_user.mqtt_topic }}'});
+        });
 </script>
+{% endif %}
 {% endblock %}

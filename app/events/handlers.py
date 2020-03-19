@@ -6,6 +6,12 @@ from flask_socketio import emit, send
 @socketio.on('subscribe')
 def handle_subcribe(data):
     mqtt.subscribe(str(data['topic']))
+    print(mqtt.topics)
+
+@socketio.on('unsubscribe')
+def handle_unsubscribe(data):
+    mqtt.unsubscribe(str(data['topic']))
+    print(mqtt.topics)
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
