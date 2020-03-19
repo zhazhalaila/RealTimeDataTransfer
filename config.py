@@ -29,3 +29,6 @@ class Config(object):
     LANGUAGES = ['zh', 'es']
     #cors config
     CORS_HEADERS = 'Content-Type'
+    #Mqtt config
+    MQTT_BROKER_URL = 'broker.hivemq.com'
+    MQTT_BROKER_PORT = 1883

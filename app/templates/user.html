@@ -40,10 +40,10 @@
     {% if current_user.username == user.username %}
     var socket = io();
     socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
+        socket.emit('subscribe', {topic: '{{ current_user.mqtt_topic }}'});
     });
-    socket.on('server message', function(data) {
-        $('#message').text(data.data);
+    socket.on('mqtt message', function(data) {
+        $('#message').text(data.payload);
     });
     {% endif %}
 </script>
