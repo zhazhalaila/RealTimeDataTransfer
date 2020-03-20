@@ -24,6 +24,7 @@ mail = Mail()
 moment = Moment()
 babel = Babel()
 cache = Cache()
+mqtt = Mqtt()
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
@@ -33,7 +34,6 @@ login.login_message = _l('Please log in to access this page.')
 admin = Admin()
 cors = CORS()
 socketio = SocketIO()
-mqtt = Mqtt()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -49,6 +49,8 @@ def create_app(config_class=Config):
     babel.init_app(app)
     admin.init_app(app)
     cors.init_app(app)
+    socketio.init_app(app)
+    mqtt.init_app(app)
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
@@ -61,10 +63,6 @@ def create_app(config_class=Config):
 
     from app.events import bp as events_bp
     app.register_blueprint(events_bp)
-
-    mqtt.init_app(app)
-    socketio.init_app(app)
-
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
@@ -94,6 +92,14 @@ def create_app(config_class=Config):
         app.logger.info('Microblog startup')
 
     return app
+
+def create_mqtt_app(config_class=Config):
+    app = Flask('mqtt_app')
+    app.config.from_object(config_class)
+    db.init_app(app)
+    return app
+
+    
 
 @babel.localeselector
 def get_locale():
