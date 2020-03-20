@@ -1,5 +1,6 @@
 import logging
 import os
+import eventlet
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask import Flask, request, current_app
 from flask_caching import Cache
@@ -16,6 +17,8 @@ from flask_babel import Babel, lazy_gettext as _l
 from flask_cors import CORS
 from flask_socketio import SocketIO
 from flask_mqtt import Mqtt
+
+eventlet.monkey_patch()
 
 mail = Mail()
 moment = Moment()
@@ -59,8 +62,8 @@ def create_app(config_class=Config):
     from app.events import bp as events_bp
     app.register_blueprint(events_bp)
 
-    socketio.init_app(app)
     mqtt.init_app(app)
+    socketio.init_app(app)
 
 
     if not app.debug and not app.testing:

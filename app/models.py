@@ -81,7 +81,7 @@ def load_user(id):
 
 class Sensor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sensorname = db.Column(db.String(30))
+    sensor_value = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):

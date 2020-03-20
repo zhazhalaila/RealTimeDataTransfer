@@ -34,9 +34,6 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data, mqtt_topic=form.topic.data)
         user.set_password(form.password.data)
-        for sensorname in form.sensors.data:
-            sensor = Sensor(sensorname=sensorname)
-            user.sensors.append(sensor)
         db.session.add(user)
         db.session.commit()
         flash(_('Congratulations, you are now a registered user!'))
