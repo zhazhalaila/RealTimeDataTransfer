@@ -10,7 +10,7 @@
 
 String connect_ssid;
 String connect_password;
-String connect_mqtt_server;
+String connect_mqtt_topic;
 
 unsigned long lastMillis = 0;
 
@@ -74,7 +74,7 @@ void setup(){
     JsonObject &result = jsonBuffer.createObject();
     result["connect_ssid"] = connect_ssid;
     result["connect_password"] = connect_password;
-    result["connect_mqtt_server"] = connect_mqtt_server;
+    result["connect_mqtt_topic"] = connect_mqtt_topic;
     result.printTo(*response);
     request->send(response);
   });
@@ -93,14 +93,13 @@ void setup(){
         connect_password = root["connect_password"].asString();
         //convert string type to const char* type which wifi.begin use
         WiFi.begin((const char*)connect_ssid.c_str(), (const char*)connect_password.c_str());
-        timeClient.begin();
-      }
-      if (root.containsKey("connect_mqtt_server")) {
-        connect_mqtt_server = root["connect_mqtt_server"].asString();
-        //convert string type to const char* type which mqtt client use
-        client.begin((const char*)connect_mqtt_server.c_str(), net);
+        client.begin("broker.hivemq.com", net);
         client.onMessage(messageReceived);
         connect();
+        timeClient.begin();
+      }
+      if (root.containsKey("connect_mqtt_topic")) {
+        connect_mqtt_topic = root["connect_mqtt_topic"].asString();
       }
       root.printTo(*response);
       request->send(response);
@@ -118,14 +117,14 @@ void loop()
 {
   client.loop();
 
-  //check mqtt client connect status and user input
-  if (!client.connected() && !connect_mqtt_server)
+  //check mqtt client connect status
+  if (!client.connected() && (connect_mqtt_topic.length() != 0))
   {
     connect();
   }
 
-  //send message every second
-  if (millis() - lastMillis > 2000 && client.connected())
+  //send message every ten seconds
+  if (millis() - lastMillis > 10000 && client.connected() && (connect_mqtt_topic.length() != 0))
   {
     Serial.println("connect successfully");
     //update date
@@ -141,6 +140,6 @@ void loop()
     Serial.println(payload.c_str());
     lastMillis = millis();
     //convert string type to const char[] type which mqtt client publish use
-    client.publish("/eyewater", payload.c_str());
+    client.publish((const char*)connect_mqtt_topic.c_str(), payload.c_str());
   }
 }
