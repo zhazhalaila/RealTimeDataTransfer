@@ -31,6 +31,20 @@
     {% for sensor in sensors %}
         {% include '_sensor.html' %}
     {% endfor %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 {% endblock %}
 
 {% block scripts %}
@@ -44,9 +58,6 @@
         });
         socket.on('{{ current_user.mqtt_topic }}', function(data) {
             $('#message').text(data.payload);
-        });
-        window.addEventListener("beforeunload", function (e) {
-            socket.emit('unsubscribe', {topic: '{{ current_user.mqtt_topic }}'});
         });
 </script>
 {% endif %}

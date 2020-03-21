@@ -1,15 +1,15 @@
 <table class="table table-hover">
     <tr>
-        <td width="70px">
+        <td width="35px">
             <a href="{{ url_for('main.user', username=sensor.owner.username) }}">
-                <img src="{{ sensor.owner.avatar(70) }}" />
+                <img src="{{ sensor.owner.avatar(35) }}" />
             </a>
         </td>
         <td>
             <a href="{{ url_for('main.user', username=sensor.owner.username) }}">
                 {{ sensor.owner.username }}
             </a>
-            said {{ moment(sensor.sensor_time).format('LLL') }}
+            {{ moment(sensor.sensor_time).format('LLL') }}
             <br>
             {{ sensor.sensor_value }}
         </td>

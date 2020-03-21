@@ -59,7 +59,7 @@ class User(UserMixin, db.Model):
     def followed_sensors(self):
         return Sensor.query.join(
             followers, (followers.c.followed_id == Sensor.user_id)).filter(
-                followers.c.follower_id == self.id)
+                followers.c.follower_id == self.id).order_by(Sensor.sensor_time.desc())
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(

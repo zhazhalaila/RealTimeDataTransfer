@@ -9,11 +9,10 @@ ctx = create_mqtt_app().app_context()
 
 @socketio.on('subscribe')
 def handle_subcribe(data):
-    mqtt.subscribe(str(data['topic']))
-
-@socketio.on('unsubscribe')
-def handle_unsubscribe(data):
-    mqtt.unsubscribe(str(data['topic']))
+    if data['topic'] in mqtt.topics.keys():
+        pass
+    else:
+        mqtt.subscribe(str(data['topic']))
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
