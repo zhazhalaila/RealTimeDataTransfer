@@ -2,8 +2,9 @@ import pickle
 import jwt
 from time import time
 from datetime import datetime
+from dateutil import parser
 from hashlib import md5
-from flask import current_app
+from flask import current_app, json
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import db, login
@@ -82,6 +83,7 @@ def load_user(id):
 class Sensor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sensor_value = db.Column(db.Text)
+    sensor_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
