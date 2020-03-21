@@ -9,44 +9,44 @@
     <script src="src/jquery-3.4.1.min.js"></script>
     <title>WiFi配置</title>
   </head>
-	<body>
-		<div class="row">
-			<div class="col-sm-12">
-				<div id="divInfo" class="alert alert-success fade ">
-				</div>
-			</div>
-		</div>
-		<div class="col-md-6 offset-md-3">
-			<div class="card-header">
-				<div class="btn-group btn-group-sm text-center" role="group" aria-label="Basic example">
-					<button id="close" type="button" class="btn btn-dark" style="display: none;">关闭</button>
-					<button id="show" type="button" class="btn btn-dark">获取当前配置</button>
-				</div>
-			</div>
-			<div class="card card-outline-secondary">
-				<div class="card-header">
-					<h3 class="mb-0">配置</h3>
-				</div>
-				<div class="card-body">
-					<form name="wifi" action="FormSubmit" method="POST">
-						<div class="form-group">
-							<label for="exampleInputSsid">WiFI名</label>
-							<input class="form-control" type="text" name="connect_ssid" placeholder="">
-						</div>
-						<div class="form-group">
-							<label for="exampleInputPassword1">WiFI密码</label>
-							<input type="text" class="form-control" name="connect_password"  id="exampleInputPassword1">
-						</div>
-						<div class="form-group">
-							<label for="exampleInputSsid">MQTT服务器</label>
-							<input class="form-control" type="text" name="connect_mqtt_server" placeholder="">
-						</div>
-						<button type="submit" class="btn btn-dark btn-sm">配置</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</body>
+  <body>
+    <div class="row">
+      <div class="col-sm-12">
+        <div id="divInfo" class="alert alert-success fade ">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 offset-md-3">
+      <div class="card-header">
+        <div class="btn-group btn-group-sm text-center" role="group" aria-label="Basic example">
+          <button id="close" type="button" class="btn btn-dark" style="display: none;">关闭</button>
+          <button id="show" type="button" class="btn btn-dark">获取当前配置</button>
+        </div>
+      </div>
+      <div class="card card-outline-secondary">
+        <div class="card-header">
+          <h3 class="mb-0">配置</h3>
+        </div>
+        <div class="card-body">
+          <form name="wifi" action="FormSubmit" method="POST">
+            <div class="form-group">
+              <label for="exampleInputSsid">WiFI名</label>
+              <input class="form-control" type="text" name="connect_ssid" placeholder="">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">WiFI密码</label>
+              <input type="text" class="form-control" name="connect_password"  id="exampleInputPassword1">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputSsid">MQTT服务器</label>
+              <input class="form-control" type="text" name="connect_mqtt_server" placeholder="">
+            </div>
+            <button type="submit" class="btn btn-dark btn-sm">配置</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
   <script>
 							
   $(document).ready(function () {
