@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-13 11:03+0800\n"
+"POT-Creation-Date: 2020-03-22 09:09+0800\n"
 "PO-Revision-Date: 2020-03-13 10:52+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -18,130 +18,128 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app/__init__.py:28
+#: app/__init__.py:33
 msgid "Please log in to access this page."
 msgstr "登录以获取该网页"
 
-#: app/forms.py:11 app/forms.py:18
+#: app/auth/forms.py:8 app/auth/forms.py:15 app/forms.py:9 app/forms.py:16
 msgid "Username"
 msgstr "用户名"
 
-#: app/forms.py:12 app/forms.py:22 app/forms.py:50
+#: app/auth/forms.py:9 app/auth/forms.py:18 app/auth/forms.py:46
+#: app/forms.py:10 app/forms.py:20 app/forms.py:48
 msgid "Password"
 msgstr "密码"
 
-#: app/forms.py:13
+#: app/auth/forms.py:10 app/forms.py:11
 msgid "Remember Me"
 msgstr "下次自动登录"
 
-#: app/forms.py:14 app/templates/login.html:5
+#: app/auth/forms.py:11 app/auth/routes.py:27 app/forms.py:12
+#: app/templates/auth/login.html:5
 msgid "Sign In"
 msgstr "登录"
 
-#: app/forms.py:19 app/forms.py:45
+#: app/auth/forms.py:16 app/auth/forms.py:41 app/forms.py:17 app/forms.py:43
 msgid "Email"
 msgstr "邮箱"
 
-#: app/forms.py:20
+#: app/auth/forms.py:17 app/forms.py:18
 msgid "Mqtt Topic"
 msgstr "MQTT主题"
 
-#: app/forms.py:21
+#: app/forms.py:19
 msgid "Sensors"
 msgstr "传感器"
 
-#: app/forms.py:24 app/forms.py:52
+#: app/auth/forms.py:20 app/auth/forms.py:48 app/forms.py:22 app/forms.py:50
 msgid "Repeat Password"
 msgstr "重复输入密码"
 
-#: app/forms.py:26 app/templates/register.html:5
+#: app/auth/forms.py:22 app/forms.py:24 app/templates/auth/register.html:5
 msgid "Register"
 msgstr "注册"
 
-#: app/forms.py:31
+#: app/auth/forms.py:27 app/forms.py:29
 msgid "Please use a different username."
 msgstr "该用户名已注册，请使用不同的用户名"
 
-#: app/forms.py:36
+#: app/auth/forms.py:32 app/forms.py:34
 msgid "Please use a different email address."
 msgstr "该邮箱已注册，请使用不同的邮箱"
 
-#: app/forms.py:41
+#: app/auth/forms.py:37 app/forms.py:39
 msgid "Please use a different mqtt topic."
 msgstr "该MQTT主题已注册，请使用不同的MQTT主题"
 
-#: app/forms.py:46 app/forms.py:54
+#: app/auth/forms.py:42 app/auth/forms.py:50 app/forms.py:44 app/forms.py:52
 msgid "Request Password Reset"
 msgstr "重置密码"
 
-#: app/routes.py:45
-msgid "Congratulations, you are now a registered user!"
-msgstr "您已成功注册!"
+#: app/auth/email.py:8
+msgid "[Microblog] Reset Your Password"
+msgstr "[MicroApp] 重置您的密码"
 
-#: app/routes.py:57
+#: app/auth/routes.py:20
 msgid "Invalid username or password"
 msgstr "用户名或密码错误"
 
-#: app/routes.py:84
+#: app/auth/routes.py:39
+msgid "Congratulations, you are now a registered user!"
+msgstr "您已成功注册!"
+
+#: app/auth/routes.py:61
 msgid "Check your email for the instructions to reset your password"
 msgstr "请检查邮箱以重置密码"
 
-#: app/routes.py:99
+#: app/auth/routes.py:76
 msgid "Your password has been reset."
 msgstr "密码已被重置"
 
-#: app/routes.py:118 app/routes.py:133
+#: app/main/forms.py:8
+msgid "Search User"
+msgstr "搜索用户"
+
+#: app/main/routes.py:61 app/main/routes.py:76 app/main/routes.py:94
 #, python-format
 msgid "User %(username)s not found."
 msgstr "没有找到用户 %(username)s"
 
-#: app/routes.py:121
+#: app/main/routes.py:64
 msgid "You cannot follow yourself!"
 msgstr "不能关注自己!"
 
-#: app/routes.py:125
+#: app/main/routes.py:68
 #, python-format
 msgid "You are following %(username)s!"
 msgstr "您已关注%(username)s!"
 
-#: app/routes.py:136
+#: app/main/routes.py:79
 msgid "You cannot unfollow yourself!"
 msgstr "不能取消关注自己"
 
-#: app/routes.py:140
+#: app/main/routes.py:83
 #, python-format
 msgid "You are not following %(username)s."
 msgstr "您已不再关注  %(username)s."
 
-#: app/templates/404.html:4
-msgid "Not Found"
-msgstr "资源没有找到"
-
-#: app/templates/500.html:4
-msgid "An unexpected error has occurred"
-msgstr "发生了未知错误"
-
-#: app/templates/500.html:5
-msgid "The administrator has been notified. Sorry for the inconvenience!"
-msgstr "网站管理员已被通知，很抱歉给您带来不便"
-
-#: app/templates/500.html:6
-msgid "Back"
-msgstr "返回"
+#: app/main/routes.py:90
+msgid "Invalid input"
+msgstr "非法输入"
 
 #: app/templates/base.html:21
 msgid "Home"
 msgstr "主页"
 
-#: app/templates/base.html:25
+#: app/templates/base.html:32
 msgid "Login"
 msgstr "登录"
 
-#: app/templates/base.html:27
+#: app/templates/base.html:34
 msgid "Profile"
 msgstr "个人主页"
 
-#: app/templates/base.html:28
+#: app/templates/base.html:35
 msgid "Logout"
 msgstr "退出"
 
@@ -150,37 +148,13 @@ msgstr "退出"
 msgid "Hi, %(username)s!"
 msgstr "你好， %(username)s!"
 
-#: app/templates/index.html:15
+#: app/templates/index.html:15 app/templates/user.html:40
 msgid "Newer posts"
 msgstr "新的记录"
 
-#: app/templates/index.html:20
+#: app/templates/index.html:20 app/templates/user.html:45
 msgid "Older posts"
 msgstr "旧的记录"
-
-#: app/templates/login.html:12
-msgid "New User?"
-msgstr "新用户?"
-
-#: app/templates/login.html:12
-msgid "Click to Register!"
-msgstr "点击注册!"
-
-#: app/templates/login.html:14
-msgid "Forgot Your Password?"
-msgstr "忘记密码?"
-
-#: app/templates/login.html:15
-msgid "Click to Reset It"
-msgstr "点击重置"
-
-#: app/templates/reset_password.html:5
-msgid "Reset Your Password"
-msgstr "重置密码"
-
-#: app/templates/reset_password_request.html:5
-msgid "Reset Password"
-msgstr "重置密码"
 
 #: app/templates/user.html:8
 msgid "User"
@@ -207,6 +181,30 @@ msgstr "关注"
 #: app/templates/user.html:16
 msgid "Unfollow"
 msgstr "取消关注"
+
+#: app/templates/auth/login.html:12
+msgid "New User?"
+msgstr "新用户?"
+
+#: app/templates/auth/login.html:12
+msgid "Click to Register!"
+msgstr "点击注册!"
+
+#: app/templates/auth/login.html:14
+msgid "Forgot Your Password?"
+msgstr "忘记密码?"
+
+#: app/templates/auth/login.html:15
+msgid "Click to Reset It"
+msgstr "点击重置"
+
+#: app/templates/auth/reset_password.html:5
+msgid "Reset Your Password"
+msgstr "重置密码"
+
+#: app/templates/auth/reset_password_request.html:5
+msgid "Reset Password"
+msgstr "重置密码"
 
 #: app/templates/email/reset_password.html:1
 msgid "Dear"
@@ -237,6 +235,22 @@ msgstr "真挚的"
 #: app/templates/email/reset_password.html:12
 msgid "The Microblog Team"
 msgstr "MicroApp 团队"
+
+#: app/templates/errors/404.html:4
+msgid "Not Found"
+msgstr "资源没有找到"
+
+#: app/templates/errors/500.html:4
+msgid "An unexpected error has occurred"
+msgstr "发生了未知错误"
+
+#: app/templates/errors/500.html:5
+msgid "The administrator has been notified. Sorry for the inconvenience!"
+msgstr "网站管理员已被通知，很抱歉给您带来不便"
+
+#: app/templates/errors/500.html:6
+msgid "Back"
+msgstr "返回"
 
 #~ msgid "You are following {}!"
 #~ msgstr "您已关注"

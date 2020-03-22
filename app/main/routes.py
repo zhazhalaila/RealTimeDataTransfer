@@ -5,6 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_babel import _, get_locale
 from werkzeug.urls import url_parse
 from app import db, cache
+from app.main.forms import SearchForm
 from app.models import User, Sensor
 from app.main import bp
 from flask_cors import cross_origin
@@ -14,6 +15,7 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        g.search_form = SearchForm()
     g.local = str(get_locale())
 
 @bp.after_request
@@ -80,6 +82,19 @@ def unfollow(username):
     db.session.commit()
     flash(_('You are not following %(username)s.', username=username))
     return redirect(url_for('main.user', username=username))
+
+@bp.route('/search')
+@login_required
+def search():
+    if not g.search_form.validate():
+        flash(_('Invalid input'))
+        return redirect(url_for('main.index'))
+    user = User.query.filter_by(username=g.search_form.q.data).first()
+    if user is None:
+        flash(_('User %(username)s not found.', username=g.search_form.q.data))
+        return redirect(url_for('main.index'))
+    else:
+        return redirect(url_for('main.user', username=g.search_form.q.data))
 
 '''
 @bp.route('/test')

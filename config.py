@@ -24,7 +24,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['1176694275@qq.com']
     #page config
-    SENSORS_PER_PAGE = 25
+    SENSORS_PER_PAGE = 15
     #language support
     LANGUAGES = ['zh', 'es']
     #cors config

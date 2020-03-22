@@ -9,7 +9,7 @@
             <a href="{{ url_for('main.user', username=sensor.owner.username) }}">
                 {{ sensor.owner.username }}
             </a>
-            {{ moment(sensor.sensor_time).format('LLL') }}
+            {{ moment(sensor.sensor_time).fromNow() }}
             <br>
             {{ sensor.sensor_value }}
         </td>

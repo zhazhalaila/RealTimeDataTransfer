@@ -28,6 +28,8 @@
             </div>
         </div>
     </div>
+
+
     {% for sensor in sensors %}
         {% include '_sensor.html' %}
     {% endfor %}
@@ -59,6 +61,6 @@
         socket.on('{{ current_user.mqtt_topic }}', function(data) {
             $('#message').text(data.payload);
         });
-</script>
+    </script>
 {% endif %}
 {% endblock %}
