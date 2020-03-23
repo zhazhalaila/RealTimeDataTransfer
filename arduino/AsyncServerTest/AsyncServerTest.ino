@@ -66,6 +66,28 @@ void setup(){
   server.on("/src/jquery-3.4.1.min.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/src/jquery-3.4.1.min.js", "text/javascript");
   });
+
+  server.on("/getWiFiStatus", HTTP_GET, [](AsyncWebServerRequest *request){
+    if (WiFi.status() != WL_CONNECTED)
+    {
+      request->send(200, "text/plain", "{'WiFi_Connect_Status': 'Unconnected'}");
+    }
+    else
+    {
+      request->send(200, "text/plain", "{'WiFi_Connect_Status': 'Connected'}");
+    }
+  });
+
+  server.on("/getMqttStatus", HTTP_GET, [](AsyncWebServerRequest *request){
+    if (client.connected())
+    {
+      request->send(200, "text/plain", "{'MQTT_Connect_Status': 'Connected'}");
+    }
+    else
+    {
+      request->send(200, "text/plain", "{'MQTT_Connect_Status': 'Unconnected'}");
+    }
+  });
   
   //get config of wifi and mqtt server return json object
   server.on("/getConfig", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -117,12 +139,12 @@ void loop()
 {
   client.loop();
 
-  //check mqtt client connect status
+  //check mqtt client connect status and user input
   if (!client.connected() && (connect_mqtt_topic.length() != 0))
   {
     connect();
   }
-
+  
   //send message every ten seconds
   if (millis() - lastMillis > 10000 && client.connected() && (connect_mqtt_topic.length() != 0))
   {

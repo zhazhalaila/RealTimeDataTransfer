@@ -21,6 +21,8 @@
         <div class="btn-group btn-group-sm text-center" role="group" aria-label="Basic example">
           <button id="close" type="button" class="btn btn-dark" style="display: none;">关闭</button>
           <button id="show" type="button" class="btn btn-dark">获取当前配置</button>
+          <button id="wifi-status" type="button" class="btn btn-dark">获取WiFi连接状态</button>
+          <button id="mqtt-status" type="button" class="btn btn-dark">获取MQTT连接状态</button>
         </div>
       </div>
       <div class="card card-outline-secondary">
@@ -30,16 +32,16 @@
         <div class="card-body">
           <form name="wifi" action="FormSubmit" method="POST">
             <div class="form-group">
-              <label for="exampleInputSsid">WiFI名</label>
+              <label for="exampleInputSsid">WiFi名</label>
               <input class="form-control" type="text" name="connect_ssid" placeholder="">
             </div>
             <div class="form-group">
-              <label for="exampleInputPassword1">WiFI密码</label>
+              <label for="exampleInputPassword1">WiFi密码</label>
               <input type="text" class="form-control" name="connect_password"  id="exampleInputPassword1">
             </div>
             <div class="form-group">
-              <label for="exampleInputSsid">MQTT服务器</label>
-              <input class="form-control" type="text" name="connect_mqtt_server" placeholder="">
+              <label for="exampleInputSsid">MQTT发布主题</label>
+              <input class="form-control" type="text" name="connect_mqtt_topic" placeholder="">
             </div>
             <button type="submit" class="btn btn-dark btn-sm">配置</button>
           </form>
@@ -48,9 +50,7 @@
     </div>
   </body>
   <script>
-							
   $(document).ready(function () {
-
     $('#close').on('click', function () {
       $('#divInfo').removeClass('show');
       $('#close').css('display', 'none');
@@ -74,15 +74,39 @@
       })
     });
 
+    $('#wifi-status').on('click', function () {
+      $.ajax({
+        url: '/getWiFiStatus',
+        type: 'GET',
+        success: function (data) {
+          console.log(data);
+          $('#divInfo').addClass('show').append(data);
+          $('#close').css('display', 'block');
+        }
+      })
+    });
+
+    $('#mqtt-status').on('click', function () {
+      $.ajax({
+        url: '/getMqttStatus',
+        type: 'GET',
+        success: function (data) {
+          console.log(data);
+          $('#divInfo').addClass('show').append(data);
+          $('#close').css('display', 'block');
+        }
+      })
+    });
+
     $('form[name="wifi"]').on('submit', function (event) {
       event.preventDefault();
       var connect_ssid = $('input[name="connect_ssid"]').val();
       var connect_password = $('input[name="connect_password"]').val();
-      var connect_mqtt_server = $('input[name="connect_mqtt_server"]').val();
+      var connect_mqtt_topic = $('input[name="connect_mqtt_topic"]').val();
       var data = {
         connect_ssid: connect_ssid,
         connect_password: connect_password,
-        connect_mqtt_server: connect_mqtt_server
+        connect_mqtt_topic: connect_mqtt_topic
       }
       $.ajax({
         url: '/postConfig',
@@ -104,5 +128,5 @@
       })
     });
   }); 
-  </script>
+  </script> 
 </html>
