@@ -1,6 +1,6 @@
 import pickle
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, g, current_app, json
+from flask import render_template, flash, redirect, url_for, request, g, current_app, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_babel import _, get_locale
 from werkzeug.urls import url_parse

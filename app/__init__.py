@@ -48,7 +48,7 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
     admin.init_app(app)
-    cors.init_app(app)
+    cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
     socketio.init_app(app)
     mqtt.init_app(app)
 
@@ -60,6 +60,9 @@ def create_app(config_class=Config):
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
+
+    from app.api import bp as api_bp
+    app.register_blueprint(api_bp, url_prefix='/api')
 
     from app.events import bp as events_bp
     app.register_blueprint(events_bp)

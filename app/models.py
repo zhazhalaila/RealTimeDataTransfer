@@ -88,3 +88,9 @@ class Sensor(db.Model):
 
     def __repr__(self):
         return '<Sensor {}>'.format(self.sensorname)
+
+    def to_dict(self):
+        return {
+            'sensor_value': self.sensor_value,
+            'sensor_time': self.sensor_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+        }
