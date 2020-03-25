@@ -19,11 +19,11 @@
         </tr>
     </table>
     <hr>
-    <div class="row">
+    <div class="row" id="show">
         <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
                 <div class="container">
-                    <p id="message">...</p>
+                    <p id="message"></p>
                 </div>
             </div>
         </div>
@@ -33,12 +33,22 @@
     <div class="row">
         <div class="col-sm-6 col-md-4">
             <div>
-                <canvas id="myChart"></canvas>
+                <canvas id="temperature" style="display: none;"></canvas>
             </div>
         </div>
         <div class="col-sm-6 col-md-4">
             <div>
-                <canvas id="myChart1" style="display: none;"></canvas>
+                <canvas id="humidity" style="display: none;"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div>
+                <canvas id="mq2" style="display: none;"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div>
+                <canvas id="mq5" style="display: none;"></canvas>
             </div>
         </div>
     </div>
@@ -79,14 +89,14 @@
 {% endif %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script type="text/javascript" charset="utf-8">
-    function renderChart(data, labels) {
-        var ctx = document.getElementById("myChart").getContext('2d');
+    function renderChart(key, label, data, labels) {
+        var ctx = document.getElementById(key).getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: '24 Hours',
+                    label: label,
                     data: data,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -112,22 +122,42 @@
     }
 
     $(document).ready(function(){
+        {% if current_user.username != user.username %}
+            $('#show').hide();
+        {% endif %}
         $.ajax({
             url: '{{ url_for("api.user_api", username=user.username) }}',
             type: 'GET',
             success: function(data) {
+                //translate type to chinese
+                var tranlsate = {'temperature': '最近24小时温度(°C)', 'humidity': '最近24小时湿度(%)'};
                 var data = data.reverse();
                 var labels = [];
-                var temperature = [];
+                var sensorValue = [];
                 data.forEach(function (element) {
                     //parse date to hours string
                     var date = new Date(element['sensor_time']).getHours().toString();
                     //parse temperature to float
-                    var value = JSON.parse(element['sensor_value']);
-                    temperature.push(parseFloat(value['temperature']));
+                    sensorValue.push(JSON.parse(element['sensor_value']))
+                    //temperature.push(parseFloat(value['temperature']));
                     labels.push(date);
                 });
-                renderChart(temperature, labels);
+                var dict = {};
+                //construct dict to {"type1": [], "type2": [], ...}
+                Object.keys(sensorValue[0]).map(function(key, index) {
+                        dict[key] = [];
+                });
+                //push type value to dict
+                sensorValue.forEach(function (element) {
+                    Object.keys(element).map(function(key, index) {
+                        dict[key].push(parseFloat(element[key]));
+                    });
+                });
+                //show canvas
+                Object.keys(dict).map(function(key) {
+                    $('#'+key).css("display", "block");
+                    renderChart(key, tranlsate[key], dict[key], labels);
+                });
             }
         })
     });
