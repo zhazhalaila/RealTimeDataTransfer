@@ -11,6 +11,7 @@
 String connect_ssid;
 String connect_password;
 String connect_mqtt_topic;
+String connect_mqtt_suscribe_topic;
 
 unsigned long lastMillis = 0;
 
@@ -33,8 +34,28 @@ void connect() {
   client.subscribe("/example");
 }
 
+void messagePublish() {
+  Serial.println("connect successfully");
+  //update date
+  timeClient.update();
+  //create json object to store data
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject &monitor_value = jsonBuffer.createObject();
+  monitor_value["temperature"] = "28.5";
+  monitor_value["humidity"] = "19%";
+  monitor_value["time"] = timeClient.getFormattedDate();
+  String payload;
+  monitor_value.printTo(payload);
+  Serial.println(payload.c_str());
+  lastMillis = millis();
+  //convert string type to const char[] type which mqtt client publish use
+  client.publish((const char*)connect_mqtt_topic.c_str(), payload.c_str());
+}
+
 void messageReceived(String &topic, String &payload) {
-  Serial.println("incoming: " + topic + " - " + payload);
+  if (payload == "USER_ONLINE") {
+    messagePublish();
+  }
 }
 
 
@@ -122,6 +143,9 @@ void setup(){
       }
       if (root.containsKey("connect_mqtt_topic")) {
         connect_mqtt_topic = root["connect_mqtt_topic"].asString();
+        connect_mqtt_suscribe_topic = "/test" + connect_mqtt_topic;
+        //subscribe a topic
+        client.subscribe((const char*)connect_mqtt_suscribe_topic.c_str());
       }
       root.printTo(*response);
       request->send(response);
@@ -146,22 +170,8 @@ void loop()
   }
   
   //send message every ten seconds
-  if (millis() - lastMillis > 10000 && client.connected() && (connect_mqtt_topic.length() != 0))
+  if (millis() - lastMillis > 60000 && client.connected() && (connect_mqtt_topic.length() != 0))
   {
-    Serial.println("connect successfully");
-    //update date
-    timeClient.update();
-    //create json object to store data
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject &monitor_value = jsonBuffer.createObject();
-    monitor_value["temperature"] = "28.5";
-    monitor_value["humidity"] = "19%";
-    monitor_value["time"] = timeClient.getFormattedDate();
-    String payload;
-    monitor_value.printTo(payload);
-    Serial.println(payload.c_str());
-    lastMillis = millis();
-    //convert string type to const char[] type which mqtt client publish use
-    client.publish((const char*)connect_mqtt_topic.c_str(), payload.c_str());
+    messagePublish();
   }
 }
