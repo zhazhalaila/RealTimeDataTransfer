@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     mqtt_topic = db.Column(db.String(64), index=True, unique=True)
+    mqtt_publish_topic = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     #one to many
@@ -87,7 +88,7 @@ class Sensor(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return '<Sensor {}>'.format(self.sensorname)
+        return '<Sensor {}>'.format(self.sensor_value)
 
     def to_dict(self):
         return {

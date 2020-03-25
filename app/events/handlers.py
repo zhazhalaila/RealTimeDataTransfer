@@ -14,6 +14,10 @@ def handle_subcribe(data):
     else:
         mqtt.subscribe(str(data['topic']))
 
+@socketio.on('publish')
+def handle_publish(data):
+    mqtt.publish(data['topic'], data['status'])
+
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     with ctx:

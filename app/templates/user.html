@@ -36,6 +36,11 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+        <div class="col-sm-6 col-md-4">
+            <div>
+                <canvas id="myChart1" style="display: none;"></canvas>
+            </div>
+        </div>
     </div>
 
     {% for sensor in sensors %}
@@ -65,6 +70,7 @@
         var socket = io();
         socket.on('connect', function() {
             socket.emit('subscribe', {topic: '{{ current_user.mqtt_topic }}'});
+            socket.emit('publish', {topic: '{{ current_user.mqtt_publish_topic }}', status: 'USER_ONLINE'});
         });
         socket.on('{{ current_user.mqtt_topic }}', function(data) {
             $('#message').text(data.payload);
@@ -75,6 +81,22 @@
 <script type="text/javascript" charset="utf-8">
     function renderChart(data, labels) {
         var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '24 Hours',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                }]
+            },
+        });
+    }
+
+    function renderChart1(data, labels) {
+        var ctx = document.getElementById("myChart1").getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
