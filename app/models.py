@@ -1,9 +1,7 @@
 import pickle
 import jwt
-import base64
-import os
 from time import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil import parser
 from hashlib import md5
 from flask import current_app, json, url_for
@@ -47,8 +45,6 @@ class User(UserMixin, PaginatedAPIMixin, db.Model):
     mqtt_publish_topic = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    token = db.Column(db.String(32), index=True, unique=True)
-    token_expiration = db.Column(db.DateTime)
     #one to many
     sensors = db.relationship('Sensor', backref='owner', lazy='dynamic')
     #many to many
@@ -129,25 +125,6 @@ class User(UserMixin, PaginatedAPIMixin, db.Model):
         except:
             return
         return User.query.get(id)
-
-    def get_token(self, expires_in=3600):
-        now = datetime.utcnow()
-        if self.token and self.token_expiration > now + timedelta(seconds=60):
-            return self.token
-        self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
-        self.token_expiration = now + timedelta(seconds=expires_in)
-        db.session.add(self)
-        return self.token
-
-    def revoke_token(self):
-        self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
-
-    @staticmethod
-    def check_token(token):
-        user = User.query.filter_by(token=token).first()
-        if user is None or user.token_expiration < datetime.utcnow():
-            return None
-        return user
 
 #use flask-caching and redis
 @login.user_loader

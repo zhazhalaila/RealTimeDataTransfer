@@ -32,3 +32,5 @@ class Config(object):
     #Mqtt config
     MQTT_BROKER_URL = 'broker.hivemq.com'
     MQTT_BROKER_PORT = 1883
+    #JWT config
+    JWT_SECRET_KEY = 'you-will-never-guess'

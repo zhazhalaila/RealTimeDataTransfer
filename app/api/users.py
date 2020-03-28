@@ -1,10 +1,12 @@
-from flask import jsonify, request, url_for
+from flask import g, jsonify, request, url_for
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from app import db
 from app.models import User
 from app.api import bp
 from app.api.errors import bad_request
 
 @bp.route('/users/<int:id>', methods=['GET'])
+@jwt_required
 def get_user(id):
     return jsonify(User.query.get_or_404(id).to_dict())
 
@@ -54,6 +56,20 @@ def create_user():
     response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response
 
-@bp.route('/users/<int:id>', methods=['PUT'])
-def update_user(id):
-    pass
+@bp.route('/users/login', methods=['POST'])
+def user_login():
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+    
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
+    if not username:
+        return jsonify({"msg": "Missing username parameter"}), 400
+    if not password:
+        return jsonify({"msg": "Missing password parameter"}), 400
+    user = User.query.filter_by(username=username).first()
+    if user is None or not user.check_password(password):
+        return jsonify({"msg": "Bad username or password"}), 401
+    g.current_user = user
+    access_token = create_access_token(identity=user.id)
+    return jsonify(access_token=access_token), 200
