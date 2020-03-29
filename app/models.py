@@ -143,5 +143,7 @@ class Sensor(db.Model, PaginatedAPIMixin):
     def to_dict(self):
         return {
             'sensor_value': self.sensor_value,
-            'sensor_time': self.sensor_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+            'sensor_time': self.sensor_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'owner_name': self.owner.username,
+            'sensor_owner_avatar': self.owner.avatar(35)
         }

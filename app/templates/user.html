@@ -53,18 +53,21 @@
         </div>
     </div>
 
-    {% for sensor in sensors %}
-        {% include '_sensor.html' %}
-    {% endfor %}
+    <div id="sensors">
+        {% for sensor in sensors %}
+            {% include '_sensor.html' %}
+        {% endfor %}
+    </div>
+
     <nav aria-label="...">
         <ul class="pager">
-            <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or '#' }}">
+            <li>
+                <a id="prev_url" href="">
                     <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
                 </a>
             </li>
-            <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or '#' }}">
+            <li>
+                <a id="next_url" href="">
                     {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
                 </a>
             </li>
@@ -89,6 +92,40 @@
 {% endif %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script type="text/javascript" charset="utf-8">
+    function renderSensors(data) {
+        $('#sensors').empty();
+        var translate = {'temperature': '温度', 'humidity': '湿度'};
+        data.forEach(function (element) {
+            var sensor = JSON.parse(element['sensor_value']);
+            var sensor_text = '';
+            Object.keys(sensor).forEach(function(key) {
+                    sensor_text += translate[key];
+                    sensor_text += ': ';
+                    sensor_text += sensor[key];
+                    sensor_text += ' ';
+            });
+            $('#sensors').append(
+                '<table class="table table-hover">'
+                    + '<tr>'
+                        + '<td width="35px">'
+                            + '<a href="/user/' + element['owner_name'] + '">'
+                                + '<img src="' + element['sensor_owner_avatar'] + '"/>'
+                            + '</a>'
+                        + '<td>'
+                            + '<a href="/user/' + element['owner_name'] + '">'
+                                + element['owner_name'] + ' '
+                            + '</a>'
+                            + moment(element['sensor_time']).fromNow()
+                            + '<br>'
+                            + sensor_text
+                        + '<td>'
+                    + '<tr>'
+                + '</table>'
+
+            );
+        });
+    }
+
     function renderChart(key, label, data, labels) {
         var ctx = document.getElementById(key).getContext('2d');
         var myChart = new Chart(ctx, {
@@ -160,6 +197,47 @@
                 });
             }
         })
+        $.ajax({
+            url: '{{ url_for("api.sensor_api", username=user.username) }}',
+            type: 'GET',
+            success: function(data) {
+                $('#next_url').attr('href', data['_links']['next']);
+                $('#prev_url').attr('href', data['_links']['prev']);
+                renderSensors(data['items']);
+            }
+        })
+        $('#next_url').click(function(event) {
+            event.preventDefault();
+            url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    console.log('[Ajax]', data['items'][0]);
+                    console.log('[Moment]', moment(data['items'][0]['sensor_time']).fromNow());
+                    renderSensors(data['items']);
+                    $('#next_url').attr('href', data['_links']['next']);
+                    $('#prev_url').attr('href', data['_links']['prev']);
+                }
+            })
+        })
+
+        $('#prev_url').click(function(event) {
+            event.preventDefault();
+            url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    console.log('[Ajax]', data['items'][0]);
+                    console.log('[Moment]', moment(data['items'][0]['sensor_time']).fromNow());
+                    renderSensors(data['items']);
+                    $('#next_url').attr('href', data['_links']['next']);
+                    $('#prev_url').attr('href', data['_links']['prev']);
+                }
+            })
+        })
+
     });
 </script>
 {% endblock %}
