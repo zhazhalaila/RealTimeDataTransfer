@@ -6,10 +6,18 @@ from app.api import bp
 @bp.route('/sensor/<username>')
 def sensor_api(username):
     user = User.query.filter_by(username=username).first()
-    print(user.username)
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     data = Sensor.to_collection_dict(user.sensors.order_by(Sensor.sensor_time.desc()), page, per_page, 'api.sensor_api', username=username)
+    return jsonify(data)
+
+@bp.route('/userfollow/<username>')
+def follow_sensor_api(username):
+    user = User.query.filter_by(username=username).first()
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 10, type=int), 100)
+    data = Sensor.to_collection_dict(user.followed_sensors(), \
+        page, per_page, 'api.follow_sensor_api', username=username)
     return jsonify(data)
 
 @bp.route('/user/<username>')

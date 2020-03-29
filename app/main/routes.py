@@ -42,15 +42,7 @@ def index():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    page = request.args.get('page', 1, type=int)
-    sensors = user.sensors.order_by(Sensor.sensor_time.desc()).paginate(
-        page, current_app.config['SENSORS_PER_PAGE'], False)
-    next_url = url_for('main.user', username=user.username, page=sensors.next_num) \
-        if sensors.has_next else None
-    prev_url = url_for('main.user', username=user.username, page=sensors.prev_num) \
-        if sensors.has_prev else None
-    return render_template('user.html', user=user, sensors=sensors.items,
-                           next_url=next_url, prev_url=prev_url)
+    return render_template('user.html', user=user)
 
 
 @bp.route('/follow/<username>')
