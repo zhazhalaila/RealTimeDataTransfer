@@ -1,7 +1,7 @@
 import logging
 import os
-import eventlet
 from logging.handlers import SMTPHandler, RotatingFileHandler
+from gevent import monkey
 from flask import Flask, request, current_app
 from flask_caching import Cache
 from config import Config
@@ -19,7 +19,7 @@ from flask_socketio import SocketIO
 from flask_mqtt import Mqtt
 from flask_jwt_extended import JWTManager
 
-eventlet.monkey_patch()
+monkey.patch_all()
 
 mail = Mail()
 moment = Moment()

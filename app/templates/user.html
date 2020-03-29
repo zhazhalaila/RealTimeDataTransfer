@@ -83,7 +83,16 @@
             socket.emit('publish', {topic: '{{ current_user.mqtt_publish_topic }}', status: 'USER_ONLINE'});
         });
         socket.on('{{ current_user.mqtt_topic }}', function(data) {
-            $('#message').text(data.payload);
+            var text = '';
+            var payload = JSON.parse(data.payload);
+            var tranlsate = {'temperature': '温度', 'humidity': '湿度'};
+            Object.keys(payload).forEach(function(key) {
+                text += tranlsate[key];
+                text += ': ';
+                text += payload[key];
+                text += ' ';
+            });
+            $('#message').text(text);
         });
     </script>
 {% endif %}
