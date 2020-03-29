@@ -1,14 +1,15 @@
 from flask import g, jsonify, request, url_for
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from app import db
-from app.models import User
+from app.models import User, Sensor
 from app.api import bp
 from app.api.errors import bad_request
 
-@bp.route('/users/<int:id>', methods=['GET'])
+@bp.route('/users/<id>', methods=['GET'])
 @jwt_required
 def get_user(id):
-    return jsonify(User.query.get_or_404(id).to_dict())
+    print(id)
+    return jsonify(User.query.get_or_404(int(id)).to_dict())
 
 @bp.route('/users', methods=['GET'])
 def get_users():
@@ -35,9 +36,10 @@ def get_followed(id):
                                    'api.get_followed', id=id)
     return jsonify(data)
 
-@bp.route('/users', methods=['POST'])
+@bp.route('/users/register', methods=['POST'])
 def create_user():
     data = request.get_json() or {}
+    print(data)
     if 'username' not in data or 'email' not in data or 'password' not in data or 'mqtt_topic' not in data:
         return bad_request('must include username, email, password and mqtt topic fields')
     if User.query.filter_by(username=data['username']).first():

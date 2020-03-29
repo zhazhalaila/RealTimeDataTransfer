@@ -131,7 +131,7 @@ class User(UserMixin, PaginatedAPIMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
-class Sensor(db.Model):
+class Sensor(db.Model, PaginatedAPIMixin):
     id = db.Column(db.Integer, primary_key=True)
     sensor_value = db.Column(db.Text)
     sensor_time = db.Column(db.DateTime)
