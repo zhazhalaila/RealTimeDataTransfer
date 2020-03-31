@@ -1,0 +1,45 @@
+server {
+    charset utf-8;
+    server_name eyewater.top, www.eyewater.top;
+ 
+    location /static {
+        alias /home/ubuntu/RealTimeDataTransfer/app/static;
+    }
+ 
+    location / {
+        proxy_set_header Host $host;
+        proxy_pass http://127.0.0.1:8000;
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection "upgrade";
+    }
+
+    location /socket.io {
+        include proxy_params;
+        
+        proxy_http_version 1.1;
+        
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        
+        proxy_pass http://127.0.0.1:8000/socket.io;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/www.eyewater.top/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.eyewater.top/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = www.eyewater.top) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name eyewater.top, www.eyewater.top;
+    return 404; # managed by Certbot
+
+
+}

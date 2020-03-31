@@ -9,4 +9,5 @@ def make_shell_context():
     return {'db':db, 'User': User, 'Sensor': Sensor}
 
 if __name__ == '__main__':
-    socketio.run(app)
+    #support https
+    socketio.run(app, async_mode=async_mode,cors_allowed_origins="*")
