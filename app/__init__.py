@@ -110,7 +110,10 @@ def create_mqtt_app(config_class=Config):
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(current_app.config['LANGUAGES'])
+    if request.accept_languages[0][0].startswith('zh'):
+        return 'zh'
+    else:
+        return 'en'
 
 from app import models
 admin.add_view(ModelView(models.User, db.session))
