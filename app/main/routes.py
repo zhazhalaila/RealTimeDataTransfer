@@ -88,21 +88,20 @@ def search():
     else:
         return redirect(url_for('main.user', username=g.search_form.q.data))
 
-'''
+
 @bp.route('/test')
 def test():
-    user = User.query.get(1)
+    user = User.query.get(12)
     return user.username
 
 @bp.route('/cachetest')
 def cachetest():
-    user = 'user_1'
+    user = 'user_12'
     use_obj = pickle.loads(cache.get(user)) if cache.get(user) else None
     if use_obj is None:
-        query = User.query.get(1)
+        query = User.query.get(12)
         use_obj = pickle.dumps(query) #translate query result to bytes
-        cache.set(user, use_obj, timeout=3600)
+        cache.set(user, use_obj, timeout=180)
         return query.username
     db.session.add(use_obj)
     return use_obj.username
-'''

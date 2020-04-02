@@ -4,6 +4,7 @@ from app.events import bp
 from flask_socketio import emit, send
 from flask import json
 from app.models import User, Sensor
+from datetime import datetime
 
 ctx = create_mqtt_app().app_context()
 
@@ -23,9 +24,9 @@ def handle_mqtt_message(client, userdata, message):
     with ctx:
         user = User.query.filter_by(mqtt_topic=message.topic).first()
         data = json.loads(message.payload.decode())
-        sensor_time = parser.parse(data.pop('time', None))
         sensor_value = json.dumps(data)
-        sensor = Sensor(sensor_value=sensor_value, sensor_time=sensor_time)
+        sensor = Sensor(sensor_value=sensor_value)
+        sensor.sensor_time = datetime.utcnow()
         user.sensors.append(sensor)
         db.session.add(user)
         db.session.commit()

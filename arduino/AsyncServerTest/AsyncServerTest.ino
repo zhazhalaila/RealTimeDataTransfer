@@ -1,7 +1,5 @@
 #include <WiFi.h>
 #include <WiFiAP.h>
-#include <NTPClient.h>
-#include <WiFiUdp.h>
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
 #include <MQTT.h>
@@ -30,33 +28,27 @@ unsigned long lastSensorMillis = 0;
 DHT dht(DHTPIN, DHTTYPE);
 WiFiClient net;
 MQTTClient client;
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP);
 
 AsyncWebServer server(80);
 
 //mqtt connect
 void connect() {
   Serial.print("connecting...");
-  while (!client.connect("MyEsp32Test", "try", "try")) {
+  String clientId = "My" + connect_mqtt_topic;
+  while (!client.connect((const char*)clientId.c_str(), "try", "try")) {
     Serial.print(".");
   }
 
   Serial.println("\nconnected!");
-
-  client.subscribe("/example");
 }
 
 void messagePublish() {
   Serial.println("connect successfully");
-  //update date
-  timeClient.update();
   //create json object to store data
   DynamicJsonBuffer jsonBuffer;
   JsonObject &monitor_value = jsonBuffer.createObject();
   monitor_value["temperature"] = String(temperature);
   monitor_value["humidity"] = String(humidity) + "%";
-  monitor_value["time"] = timeClient.getFormattedDate();
   String payload;
   monitor_value.printTo(payload);
   Serial.println(payload.c_str());
@@ -152,7 +144,6 @@ void setup(){
         client.begin("broker.hivemq.com", net);
         client.onMessage(messageReceived);
         connect();
-        timeClient.begin();
       }
       if (root.containsKey("connect_mqtt_topic")) {
         connect_mqtt_topic = root["connect_mqtt_topic"].asString();
@@ -192,6 +183,8 @@ void loop()
       //after publish status is lock
       sendStatus = LOCK;
     }
+    if (sendStatus == LOCK)
+      Serial.println("Yeah. I'm LOCL!");
     Serial.print("Humidity: ");
     Serial.print(humidity);
     Serial.print("%");
@@ -201,8 +194,8 @@ void loop()
     lastSensorMillis = millis();
   }
   
-  //send message every minute
-  if (millis() - lastMillis > 60000 && client.connected() && (connect_mqtt_topic.length() != 0) && !isnan(humidity) && !isnan(temperature))
+  //send message every hour
+  if (millis() - lastMillis > 3600000 && client.connected() && (connect_mqtt_topic.length() != 0) && !isnan(humidity) && !isnan(temperature))
   {
     lastMillis = millis();
     messagePublish();
