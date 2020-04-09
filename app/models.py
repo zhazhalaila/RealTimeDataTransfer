@@ -7,7 +7,24 @@ from hashlib import md5
 from flask import current_app, json, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from sqlalchemy.ext import mutable
 from app import db, login
+
+class JsonEncodedDict(db.TypeDecorator):
+    impl = db.Text
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return '{}'
+        else:
+            return json.dumps(value)
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return {}
+        else:
+            return json.loads(value)
+
+mutable.MutableDict.associate_with(JsonEncodedDict)
 
 class PaginatedAPIMixin(object):
     @staticmethod
@@ -133,7 +150,7 @@ def load_user(id):
 
 class Sensor(db.Model, PaginatedAPIMixin):
     id = db.Column(db.Integer, primary_key=True)
-    sensor_value = db.Column(db.Text)
+    sensor_value = db.Column(JsonEncodedDict)
     sensor_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 

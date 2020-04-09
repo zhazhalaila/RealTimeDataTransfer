@@ -2,7 +2,7 @@ function renderSensors(data) {
     $('#sensors').empty();
     var translate = {'temperature': '温度', 'humidity': '湿度'};
     data.forEach(function (element) {
-        var sensor = JSON.parse(element['sensor_value']);
+        var sensor = element['sensor_value'];
         var sensor_text = '';
         Object.keys(sensor).forEach(function(key) {
                 sensor_text += translate[key];

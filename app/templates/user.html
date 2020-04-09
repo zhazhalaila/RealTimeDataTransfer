@@ -148,7 +148,7 @@
                     //parse date to hours string
                     var date = new Date(element['sensor_time']).getHours().toString();
                     //parse temperature to float
-                    sensorValue.push(JSON.parse(element['sensor_value']))
+                    sensorValue.push(element['sensor_value']);
                     //temperature.push(parseFloat(value['temperature']));
                     labels.push(date);
                 });
