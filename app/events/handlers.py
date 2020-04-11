@@ -21,12 +21,14 @@ def handle_publish(data):
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
+    print(message.payload.decode())
     with ctx:
         user = User.query.filter_by(mqtt_topic=message.topic).first()
         data = json.loads(message.payload.decode())
         sensor_value = json.dumps(data)
-        sensor = Sensor(sensor_value=sensor_value)
+        sensor = Sensor(sensor_value=data)
         sensor.sensor_time = datetime.utcnow()
+        print(sensor)
         user.sensors.append(sensor)
         db.session.add(user)
         db.session.commit()
@@ -34,4 +36,5 @@ def handle_mqtt_message(client, userdata, message):
         topic=message.topic,
         payload=sensor_value
     )
+    print(data)
     socketio.emit(message.topic, data=data)

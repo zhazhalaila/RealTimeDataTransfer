@@ -85,7 +85,7 @@
         socket.on('{{ current_user.mqtt_topic }}', function(data) {
             var text = '';
             var payload = JSON.parse(data.payload);
-            var tranlsate = {'temperature': '温度', 'humidity': '湿度'};
+            var tranlsate = {'temperature': '温度', 'humidity': '湿度', 'mq2': '烟雾检测值'};
             Object.keys(payload).forEach(function(key) {
                 text += tranlsate[key];
                 text += ': ';
@@ -140,7 +140,7 @@
             type: 'GET',
             success: function(data) {
                 //translate type to chinese
-                var tranlsate = {'temperature': '最近24小时温度(°C)', 'humidity': '最近24小时湿度(%)'};
+                var tranlsate = {'temperature': '最近24小时温度(°C)', 'humidity': '最近24小时湿度(%)', 'mq2': '最近24小时烟雾检测值'};
                 var data = data.reverse();
                 var labels = [];
                 var sensorValue = [];
@@ -154,9 +154,13 @@
                 });
                 var dict = {};
                 //construct dict to {"type1": [], "type2": [], ...}
-                Object.keys(sensorValue[0]).map(function(key, index) {
+                try {
+                    Object.keys(sensorValue[0]).map(function(key, index) {
                         dict[key] = [];
-                });
+                    }); 
+                } catch {
+                    console.log('[Current user has no data]');
+                }
                 //push type value to dict
                 sensorValue.forEach(function (element) {
                     Object.keys(element).map(function(key, index) {

@@ -1,6 +1,6 @@
 function renderSensors(data) {
     $('#sensors').empty();
-    var translate = {'temperature': '温度', 'humidity': '湿度'};
+    var translate = {'temperature': '温度', 'humidity': '湿度', 'mq2': '烟雾检测值'};
     data.forEach(function (element) {
         var sensor = element['sensor_value'];
         var sensor_text = '';
