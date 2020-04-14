@@ -140,7 +140,7 @@
             type: 'GET',
             success: function(data) {
                 //translate type to chinese
-                var tranlsate = {'temperature': '最近24小时温度(°C)', 'humidity': '最近24小时湿度(%)', 'mq2': '最近24小时烟雾检测值'};
+                var tranlsate = {'temperature': '最近一段时间温度(°C)', 'humidity': '最近一段时间湿度(%)', 'mq2': '最近一段时间烟雾检测值'};
                 var data = data.reverse();
                 var labels = [];
                 var sensorValue = [];
